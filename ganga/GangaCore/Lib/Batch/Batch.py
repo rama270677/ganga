@@ -11,6 +11,7 @@ import GangaCore.Utility.logging
 import GangaCore.Utility.Config
 
 import os
+import stat
 
 logger = GangaCore.Utility.logging.getLogger()
 
@@ -611,3 +612,15 @@ class Slurm(Batch):
     def __init__(self):
         super(Slurm, self).__init__()
 
+    def preparejob(self, jobconfig, master_input_sandbox):
+        
+        # Call parent function to generate the basic script
+        child_script_path = super(Slurm, self).preparejob(jobconfig, master_input_sandbox)
+        st = os.stat(child_script_path)
+        os.chmod(child_script_path, st.st_mode | stat.S_IEXEC)
+
+        # Now generate a Slurm submission script and python execute script where all the options can be put
+        slurm_submit_path = os.path.join(os.path.dirname(child_script_path), "__slurm_submit__")
+        open(slurm_submit_path, "w").write('\n'.join(["#!/bin/bash", self.config['srun_str']]) % child_script_path)
+
+        return slurm_submit_path

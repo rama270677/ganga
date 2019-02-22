@@ -566,6 +566,7 @@ slurm_config.addOption('queue_name', 'SLURM_CLUSTER_NAME', "Name of environment 
 slurm_config.addOption('heartbeat_frequency', '30', "Heartbeat frequency config variable")
 
 slurm_config.addOption('submit_str', 'cd %s; sbatch %s %s %s %s', "String used to submit job to queue")
+slurm_config.addOption('srun_str', 'srun echo "%s" | /bin/bash', "srun string used in the slurm submission script")
 slurm_config.addOption('submit_res_pattern', 'Submitted batch job (?P<id>\d+)',
                  "String pattern for replay from the submit command")
 

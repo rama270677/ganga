@@ -96,6 +96,7 @@ p.add_option('--ng', action='store_const', const='ng', dest='backend', help='Sub
 p.add_option('--jedi', action='store_const', const='jedi', dest='backend', help='Submit job(s) to jedi')
 p.add_option('--lsf', action='store_const', const='lsf', dest='backend', help='Submit job(s) to the local LSF batch system, e.g. on lxplus')
 p.add_option('--condor', action='store_const', const='condor', dest='backend', help='Submit job(s) to the local Condor batch system')
+p.add_option('--slurm', action='store_const', const='slurm', dest='backend', help='Submit job(s) to the local Slurm batch system')
 p.add_option('--arch', action='store', type='string', dest='arch', help='Set the architecture. By default will be taken from CMT (only used by Condor backend at present)')
 p.add_option('--pbs', action='store_const', const='pbs', dest='backend', help='Submit job(s) to the local PBS batch system')
 p.add_option('--sge', action='store_const', const='sge', dest='backend', help='Submit job(s) to the local SGE batch system')
@@ -693,7 +694,9 @@ elif opt.backend == 'condor':
     elif j.application.atlas_cmtconfig:
         j.backend.requirements.arch = j.application.atlas_cmtconfig.split('-')[0].upper()
 
-    if opt.queue: j.backend.queue = opt.queue        
+    if opt.queue: j.backend.queue = opt.queue
+elif opt.backend == 'slurm':
+    j.backend = Slurm()
 elif opt.backend == 'pbs':
     j.backend = PBS()
     if opt.queue: j.backend.queue = opt.queue
@@ -777,7 +780,7 @@ if opt.backend in [ 'lcg', 'cream'] or opt.glite:
    if opt.walltime: j.backend.requirements.walltime = opt.walltime
    if opt.memory: j.backend.requirements.memory = opt.memory
 
-if opt.backend in ['sge', 'pbs', 'lsf']:
+if opt.backend in ['sge', 'pbs', 'lsf', 'slurm']:
    if opt.batchextraopts: j.backend.extraopts = opt.batchextraopts
 elif opt.backend in ['condor']:
    if opt.batchextraopts: j.backend.cdf_options = eval(opt.batchextraopts)

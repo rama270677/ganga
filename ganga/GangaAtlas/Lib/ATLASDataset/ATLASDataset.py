@@ -304,7 +304,7 @@ class ATLASOutputDataset(Dataset):
         job = self._getParent()
 
 #       Determine local output path to store files
-        if job.outputdata.location and ((job.backend._name == 'Local') or (job.backend._name == 'LSF') or (job.backend._name == 'PBS') or (job.backend._name == 'SGE') or (job.backend._name == 'Condor')):
+        if job.outputdata.location and ((job.backend._name == 'Local') or (job.backend._name == 'LSF') or (job.backend._name == 'PBS') or (job.backend._name == 'SGE') or (job.backend._name == 'Condor') or (job.backend._name == 'Slurm')):
             outputlocation =  expandfilename(job.outputdata.location)
             # update the local_location variable to point to the location
             job.outputdata.local_location = outputlocation
@@ -342,7 +342,8 @@ class ATLASOutputDataset(Dataset):
             job.backend._name == 'LSF' or \
             job.backend._name == 'PBS' or \
             job.backend._name == 'SGE' or \
-            job.backend._name == 'Condor'):
+            job.backend._name == 'Condor' or \
+            job.backend._name == 'Slurm'):
             for file in outputfiles:
 
                 pfn = outputlocation+"/"+file
